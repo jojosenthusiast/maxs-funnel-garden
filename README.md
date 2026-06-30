@@ -65,3 +65,31 @@ Optional backend: NestJS or serverless route for LLM oracle
 - Do not use heavy animations that slow the demo.
 - Do not make the weirdness obscure the PostHog usage.
 - Do not capture PII.
+
+## Current scope
+
+Phase 0 + Phase 1 only: playable skeleton.
+
+- Landing page with `MaxSprite` and a Start CTA.
+- Eight level routes: `/garden/1` through `/garden/8`.
+- Local-only progression via `localStorage`. No accounts, no PII.
+- Completion screen at `/garden/complete`.
+- Static event registry (`lib/events.ts`) and flag registry (`lib/flags.ts`).
+  Events log to `console.debug` in development; flags return static defaults.
+- `.env.example` reserves the PostHog keys; no SDK is wired up yet.
+
+Not yet implemented (Phase 2+): PostHog SDK, real flag evaluation, experiment
+exposure, surveys, session replay, error capture, LLM oracle.
+
+## Local development
+
+```bash
+pnpm install
+pnpm dev          # http://localhost:3000
+pnpm test         # node:test against the static registries and level map
+pnpm lint
+pnpm build
+```
+
+Requires Node ≥ 22.6 (uses native TypeScript stripping for the test script).
+
