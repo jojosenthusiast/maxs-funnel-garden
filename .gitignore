@@ -1,0 +1,13 @@
+# Secrets
+.env*
+!.env.example
+
+# Build artifacts
+node_modules/
+.next/
+dist/
+coverage/
+
+# Private agent artifacts
+AGENT_PROMPT.md
+PORTFOLIO_POSITIONING.md
