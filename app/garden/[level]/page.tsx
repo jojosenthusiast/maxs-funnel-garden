@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import MaxSprite from "@/components/MaxSprite";
 import PostHogProofPanel from "@/components/PostHogProofPanel";
 import GardenLevelClient from "@/components/GardenLevelClient";
-import { getLevel, isValidLevelId, LEVEL_COUNT } from "@/lib/levels";
+import { getLevel, parseLevelParam, LEVEL_COUNT } from "@/lib/levels";
 
 // Next 15+ params is a Promise.
 type Params = Promise<{ level: string }>;
@@ -15,8 +15,8 @@ export function generateStaticParams() {
 
 export default async function LevelPage({ params }: { params: Params }) {
   const { level } = await params;
-  const id = Number.parseInt(level, 10);
-  if (!isValidLevelId(id)) notFound();
+  const id = parseLevelParam(level);
+  if (id === null) notFound();
   const data = getLevel(id);
   if (!data) notFound();
 

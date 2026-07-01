@@ -81,3 +81,14 @@ export function isValidLevelId(id: unknown): id is number {
     id <= LEVEL_COUNT
   );
 }
+
+// Strict parser for the `[level]` route param. `Number.parseInt("1abc", 10)`
+// returns 1, which is why `/garden/1abc` used to resolve as level 1. We
+// require the entire string to be a plain positive integer with no leading
+// zeros, no whitespace, no sign, no trailing garbage.
+const LEVEL_PARAM_RE = /^[1-9][0-9]*$/;
+export function parseLevelParam(raw: string): number | null {
+  if (!LEVEL_PARAM_RE.test(raw)) return null;
+  const n = Number.parseInt(raw, 10);
+  return isValidLevelId(n) ? n : null;
+}
