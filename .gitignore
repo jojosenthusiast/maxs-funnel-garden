@@ -12,6 +12,12 @@ coverage/
 next-env.d.ts
 .vercel
 
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
 # Private agent artifacts
 AGENT_PROMPT.md
 PORTFOLIO_POSITIONING.md
