@@ -1,6 +1,6 @@
 // Client-side progression. localStorage; no auth, no server, no PII.
 
-import { LEVEL_COUNT } from "./levels";
+import { LEVEL_COUNT } from "./levels.ts";
 
 const STORAGE_KEY = "mfg:progress:v1";
 
