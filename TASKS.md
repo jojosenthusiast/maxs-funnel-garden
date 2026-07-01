@@ -2,20 +2,20 @@
 
 ## Phase 0 — design slice
 
-- [ ] Choose visual style.
-- [ ] Define 8 levels.
-- [ ] Define event registry.
-- [ ] Define feature flags.
-- [ ] Create PostHog project.
-- [ ] Add `.env.example`.
+- [x] Choose visual style. (mossy garden palette, SVG hedgehog, Tailwind v4)
+- [x] Define 8 levels. (`lib/levels.ts`)
+- [x] Define event registry. (`lib/events.ts`)
+- [x] Define feature flags. (`lib/flags.ts`)
+- [ ] Create PostHog project. (out-of-repo / Phase 2)
+- [x] Add `.env.example`.
 
 ## Phase 1 — playable skeleton
 
-- [ ] Build landing page.
-- [ ] Build level route.
-- [ ] Add Max sprite component.
-- [ ] Add progression state.
-- [ ] Add completion screen.
+- [x] Build landing page. (`app/page.tsx`)
+- [x] Build level route. (`app/garden/[level]/page.tsx`)
+- [x] Add Max sprite component. (`components/MaxSprite.tsx`)
+- [x] Add progression state. (`lib/progress.ts`, localStorage)
+- [x] Add completion screen. (`app/garden/complete/page.tsx`)
 
 ## Phase 2 — PostHog instrumentation
 
@@ -38,7 +38,7 @@
 
 ## Phase 4 — polish
 
-- [ ] Add proof panel.
+- [x] Add proof panel. (`components/PostHogProofPanel.tsx` — concept-only in Phase 0/1; per-level event/flag list wires in Phase 2)
 - [ ] Add README screenshots.
 - [ ] Add demo script.
 - [ ] Add public write-up.
