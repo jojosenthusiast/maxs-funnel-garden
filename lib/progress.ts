@@ -2,7 +2,8 @@
 
 import { LEVEL_COUNT } from "./levels.ts";
 
-const STORAGE_KEY = "mfg:progress:v1";
+export const PROGRESS_STORAGE_KEY = "mfg:progress:v1";
+const STORAGE_KEY = PROGRESS_STORAGE_KEY;
 
 export type Progress = { completed: number[] };
 

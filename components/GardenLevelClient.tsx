@@ -1,26 +1,52 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { LEVEL_COUNT } from "@/lib/levels";
-import { loadProgress, markCompleted, type Progress } from "@/lib/progress";
+import {
+  PROGRESS_STORAGE_KEY,
+  loadProgress,
+  markCompleted,
+  type Progress,
+} from "@/lib/progress";
 import { track } from "@/lib/events";
 
 type Props = { levelId: number };
 
-// ponytail: no subscribe needed; we only re-read after our own writes via bump.
 const EMPTY: Progress = { completed: [] };
-const noopSubscribe = () => () => {};
+
+// ponytail: useSyncExternalStore requires that getSnapshot return a stable
+// reference when the underlying data is unchanged, or React infinite-loops.
+// Progress only changes via our own writes to a single localStorage key, so
+// we cache the last (raw, parsed) pair per client.
+let cachedRaw: string | null | undefined;
+let cachedProgress: Progress = EMPTY;
+
+function getSnapshot(): Progress {
+  if (typeof window === "undefined") return EMPTY;
+  const raw = window.localStorage.getItem(PROGRESS_STORAGE_KEY);
+  if (raw === cachedRaw) return cachedProgress;
+  cachedRaw = raw;
+  cachedProgress = loadProgress();
+  return cachedProgress;
+}
+
+// Global subscribers, notified when our own writes update progress.
+const subs = new Set<() => void>();
+function subscribe(cb: () => void): () => void {
+  subs.add(cb);
+  return () => {
+    subs.delete(cb);
+  };
+}
+function notify(): void {
+  cachedRaw = undefined; // invalidate so next getSnapshot re-reads
+  for (const cb of subs) cb();
+}
 
 export default function GardenLevelClient({ levelId }: Props) {
   const router = useRouter();
-  const [, bump] = useState(0);
-
-  const progress = useSyncExternalStore(
-    noopSubscribe,
-    loadProgress,
-    () => EMPTY,
-  );
+  const progress = useSyncExternalStore(subscribe, getSnapshot, () => EMPTY);
 
   useEffect(() => {
     track("level_seen", { level: levelId });
@@ -29,9 +55,9 @@ export default function GardenLevelClient({ levelId }: Props) {
   const done = progress.completed.includes(levelId);
   const isLast = levelId >= LEVEL_COUNT;
 
-  function handleComplete() {
+  const handleComplete = useCallback(() => {
     markCompleted(levelId);
-    bump((n) => n + 1);
+    notify();
     track("level_completed", { level: levelId });
     if (isLast) {
       track("garden_completed");
@@ -39,7 +65,7 @@ export default function GardenLevelClient({ levelId }: Props) {
     } else {
       router.push(`/garden/${levelId + 1}`);
     }
-  }
+  }, [levelId, isLast, router]);
 
   return (
     <div className="mt-8 flex flex-col items-center gap-3">
