@@ -85,17 +85,41 @@ exposure, surveys, session replay, error capture, LLM oracle.
 
 Toolchain is pinned so the reviewer flow is deterministic:
 
-- Node ≥ 22.13 (`engines.node` in `package.json`; needed by both pnpm 11 and native TS stripping).
-- pnpm 11.3.0 (`packageManager` in `package.json`; corepack picks this up automatically).
+- Node ≥ 22.13 (`engines.node` in `package.json`; needed for native TS stripping in `pnpm test`).
+- pnpm 9.12.3 (`packageManager` in `package.json`; corepack activates it automatically).
+
+pnpm 9.12.3 is used instead of pnpm 11 on purpose: pnpm 11 requires
+`node:sqlite` (Node 22.5+), and reviewer machines with stale Node 20 shims
+crash on that. pnpm 9 has no such requirement.
 
 ```bash
 corepack enable                    # once per machine; activates the pinned pnpm
 pnpm install --frozen-lockfile
 pnpm dev                           # http://localhost:3000
-pnpm test                          # node:test against registries, level map, progress state, strict route parsing
+pnpm test                          # node:test — registries, level map, progress state, strict routes
 pnpm lint
 pnpm build
+pnpm test:e2e                      # Playwright smoke (installs browsers on first run)
+pnpm audit --prod --audit-level high
 ```
 
-CI runs the same four commands (`.github/workflows/ci.yml`).
+### If `pnpm` runs the wrong version
+
+If your machine has multiple Node/pnpm shims installed (fnm, nvm, Volta,
+`npm i -g pnpm`, etc.), the `pnpm` on your `PATH` may not match the pinned
+`packageManager` and can produce mismatched behavior or engine warnings.
+
+The deterministic fix is to invoke pnpm through corepack, which respects the
+`packageManager` field in `package.json` regardless of what else is on `PATH`:
+
+```bash
+corepack pnpm install --frozen-lockfile
+corepack pnpm test
+corepack pnpm lint
+corepack pnpm build
+corepack pnpm test:e2e
+corepack pnpm audit --prod --audit-level high
+```
+
+CI uses the same corepack-first approach (`.github/workflows/ci.yml`).
 

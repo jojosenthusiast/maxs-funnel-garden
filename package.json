@@ -2,7 +2,7 @@
   "name": "maxs-funnel-garden",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@11.3.0",
+  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
   "engines": {
     "node": ">=22.13.0"
   },
@@ -29,5 +29,11 @@
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["sharp", "unrs-resolver"],
+    "overrides": {
+      "postcss@<8.5.10": ">=8.5.10"
+    }
   }
 }
