@@ -52,7 +52,3 @@ export function resetProgress(): Progress {
   }
   return empty();
 }
-
-export function isAllComplete(p: Progress): boolean {
-  return p.completed.length >= LEVEL_COUNT;
-}
