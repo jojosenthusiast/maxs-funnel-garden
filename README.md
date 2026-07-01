@@ -83,13 +83,19 @@ exposure, surveys, session replay, error capture, LLM oracle.
 
 ## Local development
 
+Toolchain is pinned so the reviewer flow is deterministic:
+
+- Node ≥ 22.13 (`engines.node` in `package.json`; needed by both pnpm 11 and native TS stripping).
+- pnpm 11.3.0 (`packageManager` in `package.json`; corepack picks this up automatically).
+
 ```bash
-pnpm install
-pnpm dev          # http://localhost:3000
-pnpm test         # node:test against the static registries and level map
+corepack enable                    # once per machine; activates the pinned pnpm
+pnpm install --frozen-lockfile
+pnpm dev                           # http://localhost:3000
+pnpm test                          # node:test against registries, level map, progress state, strict route parsing
 pnpm lint
 pnpm build
 ```
 
-Requires Node ≥ 22.6 (uses native TypeScript stripping for the test script).
+CI runs the same four commands (`.github/workflows/ci.yml`).
 

@@ -38,7 +38,7 @@
 
 ## Phase 4 — polish
 
-- [ ] Add proof panel.
+- [x] Add proof panel. (`components/PostHogProofPanel.tsx` — concept-only in Phase 0/1; per-level event/flag list wires in Phase 2)
 - [ ] Add README screenshots.
 - [ ] Add demo script.
 - [ ] Add public write-up.
